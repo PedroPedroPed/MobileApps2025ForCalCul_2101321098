@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../services/food.dart';
 import '../models/foodDTO.dart';
+import '../screens/insertFoodByIDScreen.dart';
 
 class InsertFoodScreen extends StatefulWidget {
   final String token;
@@ -81,10 +82,9 @@ class _InsertFoodScreenState extends State<InsertFoodScreen> {
                   subtitle: Text(
                       "Protein: ${foodItem.protein}, Fat: ${foodItem.fat}, Carbs: ${foodItem.carbohydrates}"),
                   onTap: () {
-                    _searchController.text = foodItem.name;
-                    setState(() {
-                      food = [];
-                    });
+                    Navigator.push(context, 
+                    MaterialPageRoute(builder: (context) => InsertFoodByIDScreen(token: widget.token, food_id: foodItem.id))
+                    );
                   },
                 );
               },

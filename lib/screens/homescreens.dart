@@ -32,6 +32,10 @@ class _HomescreensState extends State<Homescreens> {
   Future<void> _getFoods() async {
     final foods = await getInfoFoods(widget.token);
 
+    for(var f in foods) {
+      print(f.gram);
+    }
+
     setState(() {
        food = foods;
     });
@@ -158,20 +162,21 @@ class _HomescreensState extends State<Homescreens> {
             ),
           ),
           SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
             child: DataTable(
                 columns: const[
                   DataColumn(label: Text('Название')),
                   DataColumn(label: Text('Белки')),
                   DataColumn(label: Text('Жиры')),
                   DataColumn(label: Text('Углеводы')),
-                  DataColumn(label: Text('Дата')),
+                  DataColumn(label: Text('Gram')),
                 ],
                 rows: food.map((food) => DataRow(cells: [
                   DataCell(Text(food.name)),
-                  DataCell(Text(food.protein.toString())),
-                  DataCell(Text(food.fat.toString())),
-                  DataCell(Text(food.carbohydrates.toString())),
-                  DataCell(Text(food.date.toString())),
+                  DataCell(Text("${food.gram * (food.protein/100)}")),
+                  DataCell(Text("${food.gram * (food.fat/100)}")),
+                  DataCell(Text("${food.gram * (food.carbohydrates/100)}")),
+                  DataCell(Text(food.gram.toString())),
                 ])).toList(),
             ),
           )

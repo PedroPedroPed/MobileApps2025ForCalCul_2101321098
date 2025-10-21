@@ -1,10 +1,13 @@
 class FoodDTO {
+  final int id;
   final String name;
   final double protein;
   final double fat;
   final double carbohydrates;
 
+
   FoodDTO({
+    required this.id,
     required this.name,
     required this.protein,
     required this.fat,
@@ -13,6 +16,7 @@ class FoodDTO {
 
   factory FoodDTO.fromJson(Map<String, dynamic> json) {
     return FoodDTO(
+      id: (json['id'] as num).toInt(),
       name: json['name'] ?? ' ',
       protein: (json['protein'] ?? 0 ).toDouble(),
       fat: (json['fat'] ?? 0 ).toDouble(),

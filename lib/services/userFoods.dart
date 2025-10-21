@@ -6,7 +6,7 @@
  import '../models/getInfoFoodsDTO.dart';
 
  Future<List<getInfoFoodsDTO>> getInfoFoods(String token) async{
-   final url = Uri.parse('http://10.0.2.2:5197/api/CreateNewFood/GetFood');
+   final url = Uri.parse('http://10.0.2.2:5197/api/UserFoods/getInfoFoodsToday');
 
    final response = await http.get(
      url,
@@ -19,4 +19,26 @@
      throw Exception('Bad request: ${response.statusCode}');
 
    }
+ }
+
+ Future<String> InsertFood(String foodId, String gram, String token) async{
+   final url = Uri.parse('http://10.0.2.2:5197/api/UserFoods/insert');
+
+       final response = await http.post(
+         url,
+         headers: {
+           'Authorization': 'Bearer $token',
+           'Content-Type': 'application/json',
+         },
+           body: jsonEncode({
+             'foodId' : foodId,
+             'gram' : gram,
+       }),
+       );
+
+       if(response.statusCode == 200 || response.statusCode == 201){
+         return ("ok");
+       }else{
+         return ("bad request");
+       }
  }
