@@ -5,6 +5,13 @@ import '../models/getInfoFoodsDTO.dart';
 import '../services/userFoods.dart';
 import '../services/food.dart';
 import '../screens/insertFoodScreen.dart';
+import '../models/goalDTO.dart';
+import '../services/goal_services.dart';
+import '../screens/createGoal.dart';
+import '../screens/FoodHistoryScreen.dart';
+import '../screens/CreateFoodScreen.dart';
+
+
 
 
 
@@ -20,6 +27,7 @@ class _HomescreensState extends State<Homescreens> {
   UserDTO? _user;
   bool _isLoading = true;
   String? _error;
+  GoalDTO? _goal;
 
   List<getInfoFoodsDTO> food = [];
   @override
@@ -27,15 +35,11 @@ class _HomescreensState extends State<Homescreens> {
     super.initState();
     _getFoods();
     _getUser();
+    _getGoal();
   }
 
   Future<void> _getFoods() async {
     final foods = await getInfoFoods(widget.token);
-
-    for(var f in foods) {
-      print(f.gram);
-    }
-
     setState(() {
        food = foods;
     });
@@ -59,6 +63,19 @@ class _HomescreensState extends State<Homescreens> {
       setState(() {
         _error = "Ошибка: $e";
         _isLoading = false;
+      });
+    }
+  }
+  Future<void> _getGoal() async {
+  final goal = await GetGoal(widget.token);
+  if(goal == null)
+     {
+     setState(() {
+       _goal = null;
+      });
+    }else {
+     setState(() {
+       _goal = goal;
       });
     }
   }
@@ -147,11 +164,24 @@ class _HomescreensState extends State<Homescreens> {
           ),
           const SizedBox(height: 16),
           _buildInfoCard("Email", user.email ?? "-"),
-          _buildInfoCard("Рост", user.height != null ? "${user.height} см" : "-"),
-          _buildInfoCard("Вес", user.weight != null ? "${user.weight} кг" : "-"),
-          _buildInfoCard("Возраст", user.age != null ? "${user.age} лет" : "-"),
+          _buildInfoCard("Height", user.height != null ? "${user.height} см" : "-"),
+          _buildInfoCard("Weight", user.weight != null ? "${user.weight} кг" : "-"),
+          _buildInfoCard("Age", user.age != null ? "${user.age} лет" : "-"),
+          Row(
+            children: [
+              Expanded(
+                child: _buildInfoCard("Goal", _goal?.goalTypeText ?? "-"),
+              ), Expanded(
+                child: _buildInfoCard("GoalWeight", _goal?.goalWeight.toString()?? "-"),
+              ),
+            ],
+          ),
           Center(
-            child: ElevatedButton(
+           child:  Column(
+             children: [ Row(
+             mainAxisAlignment: MainAxisAlignment.center,
+            children:[
+            ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
@@ -160,22 +190,58 @@ class _HomescreensState extends State<Homescreens> {
               },
               child: const Text("Insert food"),
             ),
+            ElevatedButton(
+              onPressed: () {
+              Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CreateGoalScreen (token: widget.token)),
+              );
+            },
+              child: const Text("Create goal"),
+                ),
+              ElevatedButton(
+                  onPressed: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => FoodHistoryScreen(token: widget.token)),
+                    );
+                  },
+                  child: const Text("Food history")
+              ),
+               ]
+              ),
+               Row(
+               mainAxisAlignment: MainAxisAlignment.center,
+               children: [
+                  ElevatedButton(
+                      onPressed:() {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => CreateFoodScreen (token: widget.token)),
+                        );
+                      },
+                      child: const Text("Create food")
+                  ),
+               ],
+               ),
+             ]
           ),
+      ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: DataTable(
                 columns: const[
-                  DataColumn(label: Text('Название')),
-                  DataColumn(label: Text('Белки')),
-                  DataColumn(label: Text('Жиры')),
-                  DataColumn(label: Text('Углеводы')),
+                  DataColumn(label: Text('Name')),
+                  DataColumn(label: Text('Protein')),
+                  DataColumn(label: Text('Fat')),
+                  DataColumn(label: Text('Carbohydrates')),
                   DataColumn(label: Text('Gram')),
                 ],
                 rows: food.map((food) => DataRow(cells: [
                   DataCell(Text(food.name)),
-                  DataCell(Text("${food.gram * (food.protein/100)}")),
-                  DataCell(Text("${food.gram * (food.fat/100)}")),
-                  DataCell(Text("${food.gram * (food.carbohydrates/100)}")),
+                  DataCell(Text((food.gram * (food.protein/100)).toStringAsFixed(1))),
+                  DataCell(Text((food.gram * (food.fat/100)).toStringAsFixed(1))),
+                  DataCell(Text((food.gram * (food.carbohydrates/100)).toStringAsFixed(1))),
                   DataCell(Text(food.gram.toString())),
                 ])).toList(),
             ),

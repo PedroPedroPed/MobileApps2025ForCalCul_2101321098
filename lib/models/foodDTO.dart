@@ -18,9 +18,21 @@ class FoodDTO {
     return FoodDTO(
       id: (json['id'] as num).toInt(),
       name: json['name'] ?? ' ',
-      protein: (json['protein'] ?? 0 ).toDouble(),
-      fat: (json['fat'] ?? 0 ).toDouble(),
-      carbohydrates: (json['carbohydrates'] ?? 0 ).toDouble(),
+      protein: (json['protein'] ?? 0).toDouble(),
+      fat: (json['fat'] ?? 0).toDouble(),
+      carbohydrates: (json['carbohydrates'] ?? 0).toDouble(),
     );
   }
+
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'protein': protein,
+      'fat': fat,
+      'carbohydrates': carbohydrates,
+    };
+  }
+
 }

@@ -4,6 +4,7 @@
  import 'package:flutter_secure_storage/flutter_secure_storage.dart';
  import 'dart:convert';
  import '../models/getInfoFoodsDTO.dart';
+ import 'package:intl/intl.dart';
 
  Future<List<getInfoFoodsDTO>> getInfoFoods(String token) async{
    final url = Uri.parse('http://10.0.2.2:5197/api/UserFoods/getInfoFoodsToday');
@@ -41,4 +42,20 @@
        }else{
          return ("bad request");
        }
+ }
+
+ Future<List<getInfoFoodsDTO>> getInfoFoodsForDay(String token, String date) async{
+   final url = Uri.parse('http://10.0.2.2:5197/api/UserFoods/getInfoFoods3/$date');
+
+   final response = await http.get(
+       url,
+       headers: {'Authorization': 'Bearer $token'});
+
+   if (response.statusCode == 200) {
+     final data = jsonDecode(response.body);
+     print('Ответ сервера: ${response.body}');
+     return data.map<getInfoFoodsDTO>((item) => getInfoFoodsDTO.fromJson(item)).toList();
+   } else {
+     throw Exception('Bad request: ${response.statusCode}');
+   }
  }

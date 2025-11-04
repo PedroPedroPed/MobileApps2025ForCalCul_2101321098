@@ -15,6 +15,23 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailcontroller = TextEditingController();
   final TextEditingController _passwordcontroller = TextEditingController();
 
+  @override
+  void initState(){
+    super.initState();
+    checkToken();
+  }
+  Future<void> checkToken() async{
+    final token = await AuthToken.isTokenValid();
+    if(token){
+      final token = await AuthToken.getToken();
+      if(token != null){
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Homescreens(token: token)),
+        );
+    }
+  }
+  }
 
   String? _token;
   String _message="";
@@ -45,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
               onPressed:() async {
                 final res = await login(_emailcontroller.text, _passwordcontroller.text);
 
-                final token = await storage.read(key: 'token');
+                final token = await AuthToken.getToken();
 
                 setState(() {
                   _token = token;

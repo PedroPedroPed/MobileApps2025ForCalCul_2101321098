@@ -31,3 +31,18 @@ if(response.statusCode == 200){
   throw Exception('Bad request: ${response.statusCode}');
   }
 }
+
+Future<void> CreateFood(String token,FoodDTO food)async{
+  final url = Uri.parse('http://10.0.2.2:5197/api/CreateNewFood/create');
+  final response = await http.post(
+    url,
+    headers: {'Authorization': 'Bearer $token',
+              'Content-Type': 'application/json',},
+    body: jsonEncode(food.toJson()),
+  );
+  if(response.statusCode == 200) {
+    print ('Created new food');
+  }else{
+    throw Exception('Bad request ${response.statusCode}');
+  }
+}

@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
 import '../models/userDto.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 
-final storage = FlutterSecureStorage();
 
 Future<String> login(String email, String password) async {
   final url = Uri.parse('http://10.0.2.2:5197/api/Auth/login');
@@ -19,7 +19,7 @@ Future<String> login(String email, String password) async {
     if (response.statusCode == 200) {
       final gg = jsonDecode(response.body);
       final token = gg['token'];
-      await storage.write(key: 'token', value: token);
+      await AuthToken.saveToken(token);
       return ("ok");
     } else {
       return ("bad request");
@@ -27,5 +27,32 @@ Future<String> login(String email, String password) async {
   }
   catch (e) {
     return ("error");
+  }
+}
+
+class AuthToken{
+  static const _tokenKey = 'token';
+  static final _storage = FlutterSecureStorage();
+
+  static Future<void> saveToken(String token) async{
+    return _storage.write(key: _tokenKey, value: token);
+  }
+
+  static Future<String?> getToken() async{
+    return _storage.read(key: _tokenKey);
+  }
+
+  static Future<void> removeToken() async{
+    return _storage.delete(key: _tokenKey);
+  }
+
+  static Future<bool> isTokenValid() async{
+    final token = await getToken();
+    if(token == null){
+    return false;
+    } if(JwtDecoder.isExpired(token)){
+      return false;
+    }
+    return true;
   }
 }
