@@ -17,7 +17,7 @@ class FHistoryDayScreen extends StatefulWidget{
   const FHistoryDayScreen({super.key, required this.token, required this.selectedDate});
 
   @override
-  State<FHistoryDayScreen> createState() => _FHistoryDayScreen();
+  State<FHistoryDayScree n> createState() => _FHistoryDayScreen();
 }
 
 class _FHistoryDayScreen extends State<FHistoryDayScreen>{

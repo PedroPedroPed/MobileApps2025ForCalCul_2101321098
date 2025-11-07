@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../services/auth_services.dart';
-import '../screens/homescreens.dart';
+import '../screens/bottomBarScreen.dart';
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if(token != null){
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => Homescreens(token: token)),
+          MaterialPageRoute(builder: (context) => bottomBarScreen(token: token)),
         );
     }
   }
@@ -72,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 if(res == "ok" && token != null) {
                   Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Homescreens(token: _token!)),
+                      MaterialPageRoute(builder: (context) => bottomBarScreen(token: _token!)),
                   );
                };
               },
